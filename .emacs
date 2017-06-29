@@ -11,9 +11,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("b59d7adea7873d58160d368d42828e7ac670340f11f36f67fa8071dbf957236a" default)))
  '(package-selected-packages
    (quote
-    (evil-jumper evil-mode linum-relative linum-mode use-package helm evil-visual-mark-mode))))
+    (nlinum-relative evil-jumper evil-mode linum-relative linum-mode use-package helm evil-visual-mark-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -53,32 +56,17 @@
     :ensure t))
 
 (use-package linum-relative
-  :init
-  (progn
-    (defun my-linum-formatter (line-number)
-      (propertize (format linum-relative-format line-number) 'face 'linum))
-    (setq linum-format 'my-linum-formatter)
-    ;; turn on linum-mode, and make it relative
+  :ensure t
+  :config
+  ;; something else you want
+  (setq linum-relative-current-symbol "->")
+  (global-linum-mode 1)
+  (linum-relative-mode 1))
+(use-package powerline
+	:ensure t
+  :config (powerline-center-evil-theme))
 
-    ;; emacs mode never shows linum
-    (add-hook 'evil-emacs-state-entry-hook (lambda ()
-                                             (linum-mode -1)))
-    (add-hook 'evil-emacs-state-exit-hook (lambda ()
-                                            (linum-mode 1)))
-
-    ;; in normal mode, show relative numbering
-    (add-hook 'evil-normal-state-entry-hook (lambda ()
-                                              (setq linum-format 'linum-relative)))
-    ;; turn off linum-mode, and make it normal again
-    (add-hook 'evil-normal-state-exit-hook (lambda ()
-                                             (setq linum-format 'my-linum-formatter)))
-
-    ;; copy linum face so it doesn't look weird
-    (custom-set-faces
-     '(linum-relative-current-face
-       ((t (:inherit linum :weight bold :reverse t))))))
-
-  :config (setq linum-relative-current-symbol ">>"))
- ;; Make linums relative by default
-(global-linum-mode nil)
-(linum-relative-toggle)
+(use-package airline-themes
+		:ensure t
+		:config
+		(load-theme 'airline-light))
