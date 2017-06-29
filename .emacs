@@ -70,3 +70,10 @@
 		:ensure t
 		:config
 		(load-theme 'airline-light))
+
+
+(setq color-themes '())
+(use-package zenburn-theme
+  :ensure t
+  :config
+  (load-theme 'zenburn t))
