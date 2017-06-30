@@ -1,19 +1,3 @@
-(require 'package)
-
-(prefer-coding-system 'utf-8)
-
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
-
-
-
-(setq package-enable-at-startup nil)
-
-(package-initialize)
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -24,7 +8,7 @@
     ("b59d7adea7873d58160d368d42828e7ac670340f11f36f67fa8071dbf957236a" default)))
  '(package-selected-packages
    (quote
-    (jedi elpy nlinum-relative evil-jumper evil-mode linum-relative linum-mode use-package helm evil-visual-mark-mode))))
+    (ace-window jedi elpy nlinum-relative evil-jumper evil-mode linum-relative linum-mode use-package helm evil-visual-mark-mode))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -32,71 +16,52 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(linum-relative-current-face ((t (:inherit linum :weight bold :reverse t)))))
+;;-------------------------------------START-----------------------------------------
 
+;; skip into
+(setq inhibit-startup-message t)
+;; remove the icon bar
+(tool-bar-mode -1)
 
+;; allowing right alt for symbols
+(require 'iso-transl)
+
+(require 'package)
+(prefer-coding-system 'utf-8)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+(setq package-enable-at-startup nil)
+(package-initialize)
 
 ;; Package manager
 
 (unless (package-installed-p 'use-package)
-
   (package-refresh-contents)
-
   (package-install 'use-package))
-
-
-
 (eval-when-compile
-
   (require 'use-package))
-
-
 
 ;; EVIL-MODE -- VIM keybinds
 
 (use-package evil
-
   :ensure t
-
   :config
   (evil-mode 1)
-
-
-
   (use-package evil-leader
-
     :ensure t
-
     :config
-
     (global-evil-leader-mode))
-
-
-
   (use-package evil-jumper
-
     :ensure t
-
     :config
-
     (global-evil-jumper-mode))
-
-
-
   (use-package evil-surround
-
     :ensure t
-
     :config
-
     (global-evil-surround-mode))
-
-
-
   (use-package evil-indent-textobject
-
     :ensure t))
-
-
 
 ;; RELATIVE LINE NUMBERS
 
@@ -119,33 +84,20 @@
 ;; POWERLINE FOR VIM MODE
 
 (use-package powerline
-
 	:ensure t
-
   :config (powerline-center-evil-theme))
-
-
 
 ;; COLOR THEMES
 
 (use-package airline-themes
-
 		:ensure t
-
 		:config
-
 		(load-theme 'airline-light))
 
-
-
 (setq color-themes '())
-
 (use-package zenburn-theme
-
   :ensure t
-
   :config
-
   (load-theme 'zenburn t))
 
 
@@ -153,36 +105,42 @@
 ;; FILE TREE EXPLORER
 
 (use-package neotree
-
 	:ensure t)
 
 ;; ----- PYTHON SUPPORT ------
-(use-package jedi
 
-(use-package elpy
-  :ensure t
-  :defer 2
-  :config
-  (progn
+;;(use-package elpy
+ ;; :ensure t
+;;  :defer 2
+;;  :config
+ ;; (progn
     ;; Use Flycheck instead of Flymake
-    (when (require 'flycheck nil t)
-      (remove-hook 'elpy-modules 'elpy-module-flymake)
-      (remove-hook 'elpy-modules 'elpy-module-yasnippet)
-      (remove-hook 'elpy-mode-hook 'elpy-module-highlight-indentation)
-      (add-hook 'elpy-mode-hook 'flycheck-mode))
-    (elpy-enable)
-    ;; jedi is great
-    (setq elpy-rpc-backend "jedi")))
+    ;;(when (require 'flycheck nil t)
+      ;;(remove-hook 'elpy-modules 'elpy-module-flymake)
+      ;;(remove-hook 'elpy-modules 'elpy-module-yasnippet)
+      ;;(remove-hook 'elpy-mode-hook 'elpy-module-highlight-indentation)
+      ;;(add-hook 'elpy-mode-hook 'flycheck-mode))
+    ;;(elpy-enable
+    ;;;; jedi is great
+    ;;(setq elpy-rpc-backend "jedi")))
 
-;; package to try a package without installing it
-(use-package try
-  :ensure t)
+;; buffer switching
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
 
-;; which key to help with navigation
-(use-package which-key
+(defalias 'list-buffers 'ibuffer)
+
+;; moving between windows
+(use-package ace-window
   :ensure t
-  :config
-  (which-key-mode))
+  :init
+  (progn
+    (global-set-key [remap other-window] 'ace-window)
+    (custom-set-faces
+     '(aw-leading-char-face
+       ((t (:inherit ace-jump-face-foreground :height 3.0))))) 
+    ))
 
 ;; KEY MAPPING
 
