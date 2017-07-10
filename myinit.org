@@ -102,9 +102,47 @@
 (evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
 (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
 #+END_SRC
+* flycheck
+** standard package
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+:ensure t
+:init
+(global-flycheck-mode t))
+#+END_SRC
+** pos-tip package
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck-pos-tip
+:ensure t
+:init
+(with-eval-after-load 'flycheck
+(flycheck-pos-tip-mode)))
+#+END_SRC
+** pos avy
+#+BEGIN_SRC emacs-lisp
+(use-package avy-flycheck
+:ensure t
+:init
+(global-set-key (kbd "C-f") #'avy-flycheck-goto-error))
+#+END_SRC
 * python support 
+** elpy
+#+BEGIN_SRC emacs-lisp
+(use-package elpy
+:ensure t
+:config
+(elpy-enable))
+#+END_SRC
+** jedi
+#+BEGIN_SRC emacs-lisp
+(use-package jedi
+:ensure t
+:init
+(add-hook 'python-mode-hook 'jedi:setup)
+(add-hook 'python-mode-hook 'jedi:ac-setup))
+#+END_SRC
 ** auto complete
-#+begin_src EMACS-LISP
+#+begin_src emacs-lisp
 (use-package company-jedi
   :ensure t)
 #+end_src
@@ -117,6 +155,7 @@
 (defalias 'list-buffers 'ibuffer)
 #+END_SRC
 * window management 
+** ace window
 #+BEGIN_SRC emacs-lisp
 (use-package ace-window
   :ensure t
@@ -127,7 +166,16 @@
      '(aw-leading-char-face
        ((t (:inherit ace-jump-face-foreground :height 3.0))))) 
     ))
-  #+END_SRC
+#+END_SRC
+** dim non focused window
+#+BEGIN_SRC emacs-lisp
+(use-package auto-dim-other-buffers
+:ensure t
+:config
+(progn (set-face-attribute  'auto-dim-other-buffers-face nil :background "#d8d8d2"))
+:init
+(auto-dim-other-buffers-mode t))
+#+END_SRC
 * character search
 ** package
 #+BEGIN_SRC emacs-lisp
@@ -148,8 +196,15 @@
    :diminish company-mode
    :init
    (add-hook 'after-init-hook 'global-company-mode)
+   (setq company-dabbrev-downcase 0)
+   (setq company-idle-delay 0)
    :config
    (defun my/python-mode-hook ()
+   (add-to-list 'company-backends 'company-elisp)
+  (add-to-list 'company-backends 'company-yasnippet)
+  (add-to-list 'company-backends 'company-dabbrev)
+  (add-to-list 'company-backends 'company-dabbrev-code)
+  (add-to-list 'company-backends 'company-etags)
      (add-to-list 'company-backends 'company-jedi))
    (add-hook 'python-mode-hook 'my/python-mode-hook)
     (setq company-dabbrev-downcase nil))
@@ -159,3 +214,31 @@
 (define-key evil-insert-state-map (kbd "C-SPC") 'company-complete-common)
 #+END_SRC
 
+* code template
+#+BEGIN_SRC emacs-lisp
+(use-package yasnippet
+:ensure t
+:init
+(progn (yas-global-mode 1)))
+#+END_SRC
+* Intellij like keybinds
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "<f2>") 'next-error)
+(global-set-key (kbd "S-<f2>") 'previous-error)
+#+END_SRC
+* undo tree
+** package
+#+begin_src emacs-lisp
+(use-package undo-tree
+:ensure t
+:init
+(global-undo-tree-mode))
+#+end_src
+** keybindings
+#+begin_src emacs-lisp
+(define-key evil-normal-state-map (kbd "M-u") 'undo-tree-visualize)
+#+end_src
+* highlight current line
+#+begin_src emacs-lisp
+(global-hl-line-mode t)
+#+end_src
